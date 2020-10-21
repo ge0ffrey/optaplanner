@@ -18,6 +18,7 @@ package org.optaplanner.quarkus;
 
 import java.util.function.Supplier;
 
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
 
@@ -26,22 +27,16 @@ import io.quarkus.runtime.annotations.Recorder;
 @Recorder
 public class OptaPlannerRecorder {
 
-    public Supplier<SolverConfig> solverConfigSupplier(final SolverConfig solverConfig) {
-        return new Supplier<SolverConfig>() {
-            @Override
-            public SolverConfig get() {
-                return solverConfig;
-            }
-        };
+    public Supplier<SolverConfig> solverConfigSupplier(SolverConfig solverConfig) {
+        return () -> solverConfig;
     }
 
-    public Supplier<SolverManagerConfig> solverManagerConfig(final SolverManagerConfig solverManagerConfig) {
-        return new Supplier<SolverManagerConfig>() {
-            @Override
-            public SolverManagerConfig get() {
-                return solverManagerConfig;
-            }
-        };
+    public <Solution_> Supplier<SolverFactory<Solution_>> solverFactorySupplier(SolverFactory<Solution_> solverFactory) {
+        return () -> solverFactory;
+    }
+
+    public Supplier<SolverManagerConfig> solverManagerConfig(SolverManagerConfig solverManagerConfig) {
+        return () -> solverManagerConfig;
     }
 
 }

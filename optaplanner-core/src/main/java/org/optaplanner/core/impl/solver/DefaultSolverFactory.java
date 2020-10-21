@@ -62,6 +62,11 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
 
     private final SolverConfig solverConfig;
 
+//    // No-arg constructor required for Quarkus
+//    public DefaultSolverFactory() {
+//        solverConfig = null;
+//    }
+
     public DefaultSolverFactory(SolverConfig solverConfig) {
         if (solverConfig == null) {
             throw new IllegalStateException("The solverConfig (" + solverConfig + ") cannot be null.");

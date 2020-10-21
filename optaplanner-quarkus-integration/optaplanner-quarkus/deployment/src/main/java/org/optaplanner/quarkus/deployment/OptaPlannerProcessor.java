@@ -31,6 +31,7 @@ import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
+import org.jboss.jandex.ParameterizedType;
 import org.jboss.jandex.Type;
 import org.jboss.logging.Logger;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
@@ -38,6 +39,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
@@ -148,10 +150,22 @@ class OptaPlannerProcessor {
         SolverManagerConfig solverManagerConfig = new SolverManagerConfig();
         optaPlannerBuildTimeConfig.solverManager.parallelSolverCount.ifPresent(solverManagerConfig::setParallelSolverCount);
 
+        // In case the user wants to inject the SolverConfig to modify it at runtime (not recommended)
         syntheticBeanBuildItemBuildProducer.produce(SyntheticBeanBuildItem.configure(SolverConfig.class)
                 .scope(Singleton.class)
                 .defaultBean()
                 .supplier(recorder.solverConfigSupplier(solverConfig)).done());
+
+        // Build the SolverFactory at build time
+        SolverFactory<?> solverFactory = SolverFactory.create(solverConfig);
+        // TODO Simplify with https://github.com/quarkusio/quarkus/pull/12854
+        syntheticBeanBuildItemBuildProducer.produce(SyntheticBeanBuildItem.configure(SolverFactory.class)
+                .addType(ParameterizedType.create(DotName.createSimple(SolverFactory.class.getName()),
+                        new Type[] { Type.create(DotName.createSimple(solverConfig.getSolutionClass().getName()), Type.Kind.CLASS)},
+                        null))
+                .scope(Singleton.class)
+                .defaultBean()
+                .supplier(recorder.solverFactorySupplier(solverFactory)).done());
 
         syntheticBeanBuildItemBuildProducer.produce(SyntheticBeanBuildItem.configure(SolverManagerConfig.class)
                 .scope(Singleton.class)

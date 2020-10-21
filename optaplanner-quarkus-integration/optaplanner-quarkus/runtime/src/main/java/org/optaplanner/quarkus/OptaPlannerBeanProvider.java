@@ -34,19 +34,11 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverManager;
-import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
 
 import io.quarkus.arc.DefaultBean;
 
 public class OptaPlannerBeanProvider {
-
-    @DefaultBean
-    @Singleton
-    @Produces
-    <Solution_> SolverFactory<Solution_> solverFactory(SolverConfig solverConfig) {
-        return SolverFactory.create(solverConfig);
-    }
 
     @DefaultBean
     @Singleton
@@ -57,7 +49,7 @@ public class OptaPlannerBeanProvider {
     }
 
     // Quarkus-ARC-Weld can't deal with enum pattern generics such as Score<S extends Score<S>>.
-    // See https://github.com/quarkusio/quarkus/pull/12137
+    // TODO Workaround https://github.com/wildfly/jandex/issues/88 and https://github.com/quarkusio/quarkus/pull/12137
     //    @DefaultBean
     //    @Singleton
     //    @Produces
