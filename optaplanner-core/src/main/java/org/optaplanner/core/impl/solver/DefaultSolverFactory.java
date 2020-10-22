@@ -60,12 +60,23 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
     private static final Logger logger = LoggerFactory.getLogger(DefaultSolverFactory.class);
     private static final long DEFAULT_RANDOM_SEED = 0L;
 
-    private final SolverConfig solverConfig;
+    private SolverConfig solverConfig;
 
-//    // No-arg constructor required for Quarkus
-//    public DefaultSolverFactory() {
-//        solverConfig = null;
-//    }
+    // No-arg constructor required for Quarkus Recorder
+    public DefaultSolverFactory() {
+        solverConfig = null;
+    }
+
+    // Getter required for Quarkus Recorder
+    public SolverConfig getSolverConfig() {
+        return solverConfig;
+    }
+
+    // Setter required for Quarkus Recorder
+    public void setSolverConfig(SolverConfig solverConfig) {
+        this.solverConfig = solverConfig;
+    }
+
 
     public DefaultSolverFactory(SolverConfig solverConfig) {
         if (solverConfig == null) {
@@ -216,4 +227,5 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
             return Runtime.getRuntime().availableProcessors();
         }
     }
+
 }

@@ -150,7 +150,7 @@ class OptaPlannerProcessor {
         SolverManagerConfig solverManagerConfig = new SolverManagerConfig();
         optaPlannerBuildTimeConfig.solverManager.parallelSolverCount.ifPresent(solverManagerConfig::setParallelSolverCount);
 
-        // In case the user wants to inject the SolverConfig to modify it at runtime (not recommended)
+        // In case the user wants to inject the SolverConfig to modify it at runtime (very uncommon)
         syntheticBeanBuildItemBuildProducer.produce(SyntheticBeanBuildItem.configure(SolverConfig.class)
                 .scope(Singleton.class)
                 .defaultBean()
